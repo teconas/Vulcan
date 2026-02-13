@@ -5,6 +5,18 @@
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <TargetFramework>netstandard2.0</TargetFramework>
+        <IsPackable>true</IsPackable>        
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <PackageId>teconas.Vulcan</PackageId>
+        <Authors>teconas</Authors>
+        <Description>An opinionated C# Extension Library for Common Tools, Utilies and Extension Methods.</Description>
+        <PackageProjectUrl>https://github.com/teconas/Vulcan</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/teconas/Vulcan.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +25,10 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>

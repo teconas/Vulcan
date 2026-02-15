@@ -1,12 +1,15 @@
-﻿namespace Vulcan;
+﻿using JetBrains.Annotations;
+
+namespace Vulcan;
 
 public static class DeferTool
 {
     /// <summary>
     /// Similar to golang's "defer" keyword.
-    /// Useage: <example><code>using defered = DeferTool.Defer(()=>DoThisOnDispose);</code></example>
+    /// Usage: <example><code>using defered = DeferTool.Defer(()=>DoThisOnDispose);</code></example>
     /// </summary>
     /// <remarks>Hint: Use With Static Global using</remarks>
+    [MustDisposeResource]
     public static IDisposable Defer(Action action)
         => new DeferredAction(action);
 }

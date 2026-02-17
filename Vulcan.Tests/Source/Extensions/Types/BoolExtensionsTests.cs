@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace Vulcan.Tests.Helper;
+﻿namespace Vulcan.Tests.Extensions.Types;
 
 [TestSubject(typeof(BoolExtensions))]
 public static class BoolExtensionsTests

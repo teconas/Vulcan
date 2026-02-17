@@ -1,17 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+    <!-- Generic Properties -->
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
-        <IsPackable>true</IsPackable>        
-        <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>        
+        <IsPackable>true</IsPackable>
+        <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
     </PropertyGroup>
-    
+
+    <!-- Package properties -->
     <PropertyGroup>
+        <Title>Vulcan</Title>
         <PackageId>teconas.Vulcan</PackageId>
         <Authors>teconas</Authors>
         <Description>An opinionated C# Extension Library for Common Tools, Utilies and Extension Methods.</Description>
+        <PackageIcon>icon.png</PackageIcon>
         <PackageProjectUrl>https://github.com/teconas/Vulcan</PackageProjectUrl>
         <RepositoryUrl>https://github.com/teconas/Vulcan.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -19,16 +22,19 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
+    <!-- Nuget Packages Include -->
     <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
-      <PackageReference Include="PolySharp" Version="1.15.0">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+        <PackageReference Include="JetBrains.Annotations" Version="2025.2.4"/>
+        <PackageReference Include="PolySharp" Version="1.15.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
+    <!-- Packing Options -->
     <ItemGroup>
-        <None Include="..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+        <None Include="icon.png" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>

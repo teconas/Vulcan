@@ -1,4 +1,6 @@
-﻿namespace Vulcan.Tests.Extensions.Types;
+﻿using Vulcan.Extensions;
+
+namespace Vulcan.Tests.Extensions.Types;
 
 [TestSubject(typeof(BoolExtensions))]
 public static class BoolExtensionsTests

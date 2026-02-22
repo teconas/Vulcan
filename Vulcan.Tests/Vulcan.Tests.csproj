@@ -24,6 +24,7 @@
         <Using Include="Shouldly"/>
         <Using Include="System"/>
         <Using Include="JetBrains.Annotations"/>
+        <Using Include="Vulcan.Tests.Helper"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -1,4 +1,6 @@
 ﻿using static Vulcan.DeferTool;
+// ReSharper disable AccessToModifiedClosure
+// ReSharper disable NotDisposedResource
 
 namespace Vulcan.Tests.Tools;
 
@@ -9,10 +11,10 @@ public class DeferToolTests
     public void Dispose_ExecutesAction()
     {
         // Arrange
-        var disposed = false;
+        var disposed = new LinearBool();
         
         // Act
-        var defer = Defer(()=> disposed = true);
+        var defer = Defer(disposed.Set);
         defer.Dispose();
         
         // Assert
@@ -23,10 +25,10 @@ public class DeferToolTests
     public void BeforeDispose_Nothing()
     {
         // Arrange
-        var disposed = false;
+        var disposed = new LinearBool();
         
         // Act
-        _ = Defer(()=> disposed = true);
+        _ = Defer(disposed.Set);
         
         // Assert
         disposed.ShouldBeFalse();

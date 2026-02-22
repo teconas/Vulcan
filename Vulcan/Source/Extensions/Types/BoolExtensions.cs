@@ -1,6 +1,4 @@
-﻿using Vulcan.Extensions;
-
-namespace Vulcan;
+﻿namespace Vulcan.Extensions;
 
 public static class BoolExtensions
 {

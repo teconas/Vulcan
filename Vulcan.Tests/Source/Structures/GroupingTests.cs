@@ -1,11 +1,10 @@
-﻿using JetBrains.Annotations;
-using Vulcan.Extensions;
+﻿using Vulcan.Extensions;
 using Vulcan.Structures;
 
 namespace Vulcan.Tests.Structures;
 
 [TestSubject(typeof(Grouping<,>))]
-public class GroupingTests
+public static class GroupingTests
 {
     public class Adding
     {

@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using Vulcan.Fluency.Abstraction;
 
 namespace Vulcan;
 
@@ -13,16 +12,6 @@ public static class DeferTool
     [MustDisposeResource]
     public static IDisposable Defer(Action action)
         => new DeferredAction(action);
-    
-    /// <inheritdoc cref="Defer(Action)"/>
-    [MustDisposeResource]
-    public static IDisposable Defer(ICallable action)
-        => new DeferredAction(action.Invoke);
-    
-    /// <inheritdoc cref="Defer(Action)"/>
-    [MustDisposeResource]
-    public static IDisposable Defer<T>(T target, ICallable<T> action)
-        => new DeferredAction(()=>action.Invoke(target));
     
     /// <inheritdoc cref="Defer(Action)"/>
     [MustDisposeResource]

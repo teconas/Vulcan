@@ -14,7 +14,7 @@ public static class FluencyExtensions
         }
 
         /// <summary>
-        ///     Like <see cref="Pipe{TI,TO}" />, but the return value is not propagated.
+        ///     Like <see cref="FluencyExtensions.Pipe{TI,TO}(TI,System.Func{TI,TO})" />, but the return value is not propagated.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TI Call(Action<TI> action)

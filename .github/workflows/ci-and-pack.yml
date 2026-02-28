@@ -49,7 +49,12 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           
       - name: Pack
-        run: dotnet pack -c Release -o artifacts -p:Version=${{ env.VERSION }} -p:PackageVersion=${{ env.VERSION }}
+        run: >-
+          dotnet pack -c Release -o artifacts
+          -p:Version=${{ env.VERSION }}
+          -p:PackageVersion=${{ env.VERSION }}
+          -p:AssemblyVersion=${{ env.VERSION }}
+          -p:FileVersion=${{ env.VERSION }}
 
       - name: Add GitHub Packages source
         run: |

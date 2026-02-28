@@ -1,4 +1,6 @@
-﻿public static class AllocationChecker
+﻿namespace Vulcan.Tests.Helper;
+
+public static class AllocationChecker
 {
     public static long CountAllocBytes(Action action, int warmup = 3, int runs = 10)
     {

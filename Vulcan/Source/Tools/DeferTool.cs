@@ -12,6 +12,11 @@ public static class DeferTool
     [MustDisposeResource]
     public static IDisposable Defer(Action action)
         => new DeferredAction(action);
+    
+    /// <inheritdoc cref="Defer(Action)"/>
+    [MustDisposeResource]
+    public static IDisposable Defer<T>(T target, Action<T> action)
+        => new DeferredAction(()=>action.Invoke(target));
 }
 
 file record struct DeferredAction(Action action) : IDisposable

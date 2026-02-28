@@ -4,15 +4,11 @@ public static class FluencyAsyncExtensions
 {
     extension<TIn>(Task<TIn> self)
     {
-        /// <summary>
-        ///     Monad like Bind for Tasks
-        /// </summary>
+        /// <inheritdoc cref="FluencyExtensions.Pipe{TI,TO}(TI,Func{TI,TO})"/>
         public async Task<TOut> PipeAsync<TOut>(Func<TIn, TOut> transformer)
             => transformer(await self);
 
-        /// <summary>
-        ///     Monad like Bind for Tasks
-        /// </summary>
+        /// <inheritdoc cref="FluencyExtensions.Pipe{TI,TO}(TI,Func{TI,TO})"/>
         public async Task<TOut> PipeAsync<TOut>(Func<TIn, Task<TOut>> transformer)
             => await transformer(await self);
     }

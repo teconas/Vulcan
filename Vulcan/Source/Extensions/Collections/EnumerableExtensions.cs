@@ -31,4 +31,14 @@ public static class EnumerableExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> SkipNull<T>(this IEnumerable<T?>? source)
         => source?.OfType<T>() ?? [];
+
+    /// <summary>The opposite of .Any()</summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool None<T>(this IEnumerable<T> source)
+        => !source.Any();
+    
+    /// <summary>The opposite of .Any()</summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool None<T>(this IEnumerable<T> source,  Func<T, bool> predicate)
+        => !source.Any(predicate);
 }

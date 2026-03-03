@@ -382,5 +382,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Coverage
+coverage/
+
 # Secrets
 .env

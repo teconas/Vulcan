@@ -9,6 +9,12 @@ public class CircleBuffer<T>(int capacity) : ICollection<T>
     readonly T[] _buffer = new T[capacity];
     int _head = 0;
 
+    /// <summary>Capacity of the Buffer</summary>
+    public int Capacity => capacity;
+
+    /// <summary>true if the number of elements is equal to the capacity, file otherwise</summary>
+    public bool IsAtCapacity => Count == capacity;
+
     public int Count { get; private set; }
     
     public bool IsReadOnly => false;

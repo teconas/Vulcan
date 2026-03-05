@@ -39,10 +39,23 @@ public static class DateTimeExtensions
         /// <summary>Sets the date without changing the time</summary>
         public DateTime SetDate(int year, int month, int day)
             => new(year, month, day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond, dt.Kind);
+        
+        /// <summary>Sets the date (read from passed DateTime) without changing the time</summary>
+        /// <remark>The date reading from argument is done as-is. No timezone conversion is done </remark>
+        public DateTime SetDate(DateTime dateProvider)
+            => new(dateProvider.Year, dateProvider.Month, dateProvider.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond, dt.Kind);
 
         /// <summary>Sets the time without changing the date</summary>
         /// <remark>DaylightSaving-Time changes are ignore. 01:00 to 6:00 is always 06:00</remark>
         public DateTime SetTime(int hour, int minute, int second = 0, int millisecond = 0)
             => new(dt.Year, dt.Month, dt.Day, hour, minute, second, millisecond, dt.Kind);
+        
+        /// <summary>Sets the time (read from passed DateTime) without changing the date</summary>
+        /// <remark>
+        /// - DaylightSaving-Time changes are ignore. 01:00 to 6:00 is always 06:00
+        /// - The time reading from argument is done as-is. No timezone conversion is done
+        /// </remark>
+        public DateTime SetTime(DateTime timeProvider)
+            => new(dt.Year, dt.Month, dt.Day, timeProvider.Hour, timeProvider.Minute, timeProvider.Second, timeProvider.Millisecond, dt.Kind);
     }
 }

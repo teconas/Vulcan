@@ -2,7 +2,7 @@
 
 namespace Vulcan.Extensions;
 
-public static class FloatExtensions
+public static partial class FloatExtensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float? NanToNull(this float? value)
@@ -15,12 +15,12 @@ public static class FloatExtensions
     ///<summary>Because in C# Modulus is wrong: (-6%2 → -6), (-6.Mod(2) → 2)</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Mod(this float self, float mod)
-        => (self % mod + mod) % mod;
-    
+        => mod != 0 ? (self % mod + mod) % mod : throw new DivideByZeroException();
+
     ///<summary>Because in C# Modulus is wrong: (-6%2 → -6), (-6.Mod(2) → 2)</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Mod(this float self, int mod)
-        => (self % mod + mod) % mod;
+        => mod != 0 ? (self % mod + mod) % mod : throw new DivideByZeroException();
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Clamp(this float number, float min, float max)
@@ -51,7 +51,7 @@ public static class FloatExtensions
 }
 
 // Float Fluency
-public static partial class DoubleExtensions
+public static partial class FloatExtensions
 {
     /// <summary>Rounds a number to the given precision.</summary>
     /// <remark>

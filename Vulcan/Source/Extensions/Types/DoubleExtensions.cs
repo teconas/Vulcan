@@ -15,12 +15,12 @@ public static partial class DoubleExtensions
     ///<summary>Because in C# Modulus is wrong: (-6%2 → -6), (-6.Mod(2) → 2)</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Mod(this double self, double mod)
-        => (self % mod + mod) % mod;
-    
+        => mod != 0 ? (self % mod + mod) % mod : throw new DivideByZeroException();
+
     ///<summary>Because in C# Modulus is wrong: (-6%2 → -6), (-6.Mod(2) → 2)</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Mod(this double self, int mod)
-        => (self % mod + mod) % mod;
+        => mod != 0 ? (self % mod + mod) % mod : throw new DivideByZeroException();
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Clamp(this double number, double min, double max)
@@ -46,7 +46,7 @@ public static partial class DoubleExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Approximately(this double self, double other, double precision = float.Epsilon * 8)
+    public static bool Approximately(this double self, double other, double precision = double.Epsilon * 8)
         => Math.Abs(self - other) <= precision;
 }
 

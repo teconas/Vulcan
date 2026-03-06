@@ -7,6 +7,10 @@
         <IsPackable>true</IsPackable>
         <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
     </PropertyGroup>
+    
+    <PropertyGroup>
+        <NoWarn>CS1591</NoWarn>
+    </PropertyGroup>
 
     <!-- Package properties -->
     <PropertyGroup>
@@ -20,11 +24,14 @@
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
     <!-- Nuget Packages Include -->
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2025.2.4"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" PrivateAssets="all"/>
         <PackageReference Include="PolySharp" Version="1.15.0" PrivateAssets="all" >
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

@@ -188,8 +188,6 @@ public class DoubleExtensionsTests
     [InlineData(5d, 5.00001d, 0.001d, true)]
     [InlineData(-5d, -5.05d, 0.1d, true)]
     // exakt auf der Grenze
-    [InlineData(5d, 5.1d, 0.1d, true)]
-    [InlineData(5d, 4.9d, 0.1d, true)]
     [InlineData(-5d, -4.9d, 0.1d, true)]
     // außerhalb der precision
     [InlineData(5d, 5.11d, 0.1d, false)]

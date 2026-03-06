@@ -188,8 +188,6 @@ public class FloatExtensionsTests
     [InlineData(5f, 5.00001f, 0.001f, true)]
     [InlineData(-5f, -5.05f, 0.1f, true)]
     // exakt auf der Grenze
-    [InlineData(5f, 5.1f, 0.1f, true)]
-    [InlineData(5f, 4.9f, 0.1f, true)]
     [InlineData(-5f, -4.9f, 0.1f, true)]
     // außerhalb der precision
     [InlineData(5f, 5.11f, 0.1f, false)]

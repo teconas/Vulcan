@@ -387,3 +387,6 @@ coverage/
 
 # Secrets
 .env
+
+CLAUDE.MD
+.claude/

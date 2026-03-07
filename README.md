@@ -1,5 +1,6 @@
 # Vulcan
 [![NuGet Version](https://img.shields.io/nuget/v/teconas.Vulcan)](https://www.nuget.org/packages/teconas.Vulcan)
+[![CI](https://github.com/teconas/Vulcan/actions/workflows/ci-and-pack.yml/badge.svg)](https://github.com/teconas/Vulcan/actions/workflows/ci-and-pack.yml)
 
 An opinionated C# utility library. Collected from things I kept reimplementing.
 

@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace Vulcan;
+﻿namespace Vulcan;
 
 /// <summary>A Lock based on a <see cref="SemaphoreSlim"/>, that can be used with <see langword="using"/>.</summary>
 /// <example><code>

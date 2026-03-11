@@ -4,6 +4,17 @@ namespace Vulcan.Extensions;
 
 public static class EnumerableExtensions
 {
+    /// <summary>Opposite of <see cref="Enumerable.Where{T}(IEnumerable{T}, Func{T, bool})"/></summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<T> WhereNot<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        => source.Where(x => !predicate(x));
+    
+    /// <summary>Opposite of <see cref="Enumerable.Where{T}(IEnumerable{T}, Func{T, int, bool})"/></summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<T> WhereNot<T>(this IEnumerable<T> source, Func<T, int, bool> predicate)
+        => source.Where((x,i) => !predicate(x,i));
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ICollection<T> ForEach<T>(this IEnumerable<T> source, Action<T> action)
     {
         var collection = source.ToArray();
@@ -29,7 +40,7 @@ public static class EnumerableExtensions
 
     /// <summary>Remove all null values from an IEnumerable</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<T> SkipNull<T>(this IEnumerable<T?>? source)
+    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?>? source)
         => source?.OfType<T>() ?? [];
 
     /// <summary>The opposite of .Any()</summary>

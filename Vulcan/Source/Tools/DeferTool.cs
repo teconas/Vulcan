@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace Vulcan;
+﻿namespace Vulcan;
 
 public static class DeferTool
 {

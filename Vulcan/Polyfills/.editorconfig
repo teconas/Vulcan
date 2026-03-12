@@ -1,0 +1,5 @@
+[*.cs]
+# Roslyn (VS / dotnet CLI)
+dotnet_diagnostic.IDE0130.severity = none
+# Rider / ReSharper
+resharper_check_namespace_highlighting = none

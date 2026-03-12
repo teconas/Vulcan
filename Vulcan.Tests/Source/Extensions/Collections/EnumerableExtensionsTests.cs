@@ -82,23 +82,23 @@ public static class EnumerableExtensionsTests
             => Array.Empty<int>().Distinct(x => x).ShouldBeEmpty();
     }
 
-    public class SkipNull
+    public class WhereNotNull
     {
         [Fact]
         public void RemovesNullElements()
-            => new[] { "a", null, "b", null, "c" }.SkipNull().ShouldBe(["a", "b", "c"]);
+            => new[] { "a", null, "b", null, "c" }.WhereNotNull().ShouldBe(["a", "b", "c"]);
 
         [Fact]
         public void NullSource_ReturnsEmpty()
-            => ((string?[]?)null).SkipNull().ShouldBeEmpty();
+            => ((string?[]?)null).WhereNotNull().ShouldBeEmpty();
 
         [Fact]
         public void NoNulls_ReturnsAll()
-            => new[] { "x", "y", "z" }.SkipNull().ShouldBe(["x", "y", "z"]);
+            => new[] { "x", "y", "z" }.WhereNotNull().ShouldBe(["x", "y", "z"]);
 
         [Fact]
         public void AllNull_ReturnsEmpty()
-            => new string?[] { null, null }.SkipNull().ShouldBeEmpty();
+            => new string?[] { null, null }.WhereNotNull().ShouldBeEmpty();
     }
 
     public class None
@@ -108,7 +108,6 @@ public static class EnumerableExtensionsTests
         [Fact]
         public void Empty_ReturnsTrue()
             => Array.Empty<int>().None().ShouldBeTrue();
-
 
         [Fact]
         public void NonEmpty_ReturnsFalse()

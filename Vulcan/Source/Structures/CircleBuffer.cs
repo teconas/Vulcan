@@ -19,22 +19,22 @@ public class CircleBuffer<T>(int capacity) : ICollection<T>
     
     public bool IsReadOnly => false;
 
-    public void Add(T item)
+    public virtual void Add(T item)
     {
         _buffer[_head++] = item;
         Count = Math.Max(_head, Count);
         _head %= capacity;
     }
 
-    public bool Remove(T item) => throw new NotSupportedException();
+    public virtual bool Remove(T item) => throw new NotSupportedException();
 
-    public void Clear()
+    public virtual void Clear()
     {
         _head = 0;
         Count = 0;
     }
     
-    public bool Contains(T item)
+    public virtual bool Contains(T item)
         => ToEnumerable().Contains(item);
 
     public void CopyTo(T[] array, int arrayIndex)

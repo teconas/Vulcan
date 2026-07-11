@@ -33,6 +33,13 @@ public static class DateTimeExtensionsTests
         [Fact]
         public void LeapDay_ClipsToFeb28_InNonLeapYear()
             => new DateTime(2024, 2, 29).SetYear(2023).Day.ShouldBe(28);
+
+        [Theory]
+        [InlineData(0, 1)]
+        [InlineData(-5, 1)]
+        [InlineData(10000, 9999)]
+        public void OutOfRangeYear_IsClamped(int year, int expected)
+            => new DateTime(2024, 6, 15).SetYear(year).Year.ShouldBe(expected);
     }
 
     public class SetMonth
@@ -63,6 +70,13 @@ public static class DateTimeExtensionsTests
         [Fact]
         public void Day31_InShortMonth_ClipsToLastDay()
             => new DateTime(2023, 3, 31).SetMonth(2).Day.ShouldBe(28);
+
+        [Theory]
+        [InlineData(0, 1)]
+        [InlineData(-3, 1)]
+        [InlineData(13, 12)]
+        public void OutOfRangeMonth_IsClamped(int month, int expected)
+            => new DateTime(2024, 3, 15).SetMonth(month).ShouldBe(new DateTime(2024, expected, 15));
     }
 
     public class SetDay
@@ -88,6 +102,48 @@ public static class DateTimeExtensionsTests
             // Assert
             result.Year.ShouldBe(2024);
             result.Month.ShouldBe(6);
+        }
+
+        [Fact]
+        public void ChangesDay_PreservesTime()
+        {
+            // Arrange
+            var dt = new DateTime(2026, 4, 15, 10, 30, 45, 500);
+
+            // Act
+            var result = dt.SetDay(10);
+
+            // Assert
+            result.ShouldBe(new DateTime(2026, 4, 10, 10, 30, 45, 500));
+            result.TimeOfDay.ShouldBe(dt.TimeOfDay);
+        }
+
+        [Fact]
+        public void OverLargeDay_ClipsToLastDayOfMonth()
+            => new DateTime(2026, 4, 15).SetDay(31).ShouldBe(new DateTime(2026, 4, 30));
+
+        [Fact]
+        public void Day31_InFebruary_ClipsToLastDay()
+            => new DateTime(2026, 2, 10).SetDay(31).ShouldBe(new DateTime(2026, 2, 28));
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-5)]
+        public void UnderSmallDay_ClipsToFirstDayOfMonth(int day)
+            => new DateTime(2026, 4, 15).SetDay(day).ShouldBe(new DateTime(2026, 4, 1));
+
+        [Fact]
+        public void PreservesTimeAndKind()
+        {
+            // Arrange
+            var dt = new DateTime(2026, 4, 15, 10, 30, 45, 500, DateTimeKind.Utc);
+
+            // Act
+            var result = dt.SetDay(31);
+
+            // Assert
+            result.TimeOfDay.ShouldBe(dt.TimeOfDay);
+            result.Kind.ShouldBe(DateTimeKind.Utc);
         }
     }
 
@@ -115,6 +171,12 @@ public static class DateTimeExtensionsTests
             result.Minute.ShouldBe(30);
             result.Second.ShouldBe(45);
         }
+
+        [Theory]
+        [InlineData(-1, 0)]
+        [InlineData(24, 23)]
+        public void OutOfRangeHour_IsClamped(int hour, int expected)
+            => new DateTime(2024, 6, 15, 10, 30, 45).SetHour(hour).ShouldBe(new DateTime(2024, 6, 15, expected, 30, 45));
     }
 
     public class SetMinute
@@ -141,6 +203,12 @@ public static class DateTimeExtensionsTests
             result.Hour.ShouldBe(10);
             result.Second.ShouldBe(45);
         }
+
+        [Theory]
+        [InlineData(-1, 0)]
+        [InlineData(60, 59)]
+        public void OutOfRangeMinute_IsClamped(int minute, int expected)
+            => new DateTime(2024, 6, 15, 10, 30, 45).SetMinute(minute).ShouldBe(new DateTime(2024, 6, 15, 10, expected, 45));
     }
 
     public class SetSecond
@@ -167,6 +235,12 @@ public static class DateTimeExtensionsTests
             result.Minute.ShouldBe(30);
             result.Millisecond.ShouldBe(500);
         }
+
+        [Theory]
+        [InlineData(-1, 0)]
+        [InlineData(60, 59)]
+        public void OutOfRangeSecond_IsClamped(int second, int expected)
+            => new DateTime(2024, 6, 15, 10, 30, 45).SetSecond(second).ShouldBe(new DateTime(2024, 6, 15, 10, 30, expected));
     }
 
     public class SetMillisecond
@@ -184,6 +258,12 @@ public static class DateTimeExtensionsTests
         [InlineData(999)]
         public void PreservesSecond(int ms)
             => new DateTime(2024, 6, 15, 10, 30, 45, 500).SetMillisecond(ms).Second.ShouldBe(45);
+
+        [Theory]
+        [InlineData(-1, 0)]
+        [InlineData(1000, 999)]
+        public void OutOfRangeMillisecond_IsClamped(int ms, int expected)
+            => new DateTime(2024, 6, 15, 10, 30, 45, 500).SetMillisecond(ms).ShouldBe(new DateTime(2024, 6, 15, 10, 30, 45, expected));
     }
 
     public class SetDate
@@ -225,6 +305,16 @@ public static class DateTimeExtensionsTests
         public void PreservesKind()
             => new DateTime(2024, 6, 15, 10, 30, 45, 500, DateTimeKind.Utc)
                 .SetDate(2020, 1, 1).Kind.ShouldBe(DateTimeKind.Utc);
+
+        [Theory]
+        [InlineData(2026, 4, 31, 2026, 4, 30)]
+        [InlineData(2023, 2, 29, 2023, 2, 28)]
+        [InlineData(2026, 13, 0, 2026, 12, 1)]
+        [InlineData(0, 0, 0, 1, 1, 1)]
+        [InlineData(10000, 12, 99, 9999, 12, 31)]
+        public void OutOfRangeParts_AreClamped(int year, int month, int day, int expYear, int expMonth, int expDay)
+            => new DateTime(2024, 1, 31, 10, 30, 45, 500).SetDate(year, month, day)
+                .ShouldBe(new DateTime(expYear, expMonth, expDay, 10, 30, 45, 500));
     }
 
     public class SetTime
@@ -281,5 +371,10 @@ public static class DateTimeExtensionsTests
         public void PreservesKind()
             => new DateTime(2024, 6, 15, 10, 30, 45, 500, DateTimeKind.Utc)
                 .SetTime(0, 0).Kind.ShouldBe(DateTimeKind.Utc);
+
+        [Fact]
+        public void OutOfRangeParts_AreClamped()
+            => new DateTime(2024, 6, 15).SetTime(24, 60, -1, 1000)
+                .ShouldBe(new DateTime(2024, 6, 15, 23, 59, 0, 999));
     }
 }

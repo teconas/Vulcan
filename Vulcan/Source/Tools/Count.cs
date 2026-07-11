@@ -7,7 +7,7 @@ public static class Count
 {
     /// <summary>
     ///     Count up from (including) the start Number. Use <see cref="CountRange.To" /> or <see cref="CountRange.Take" />
-    ///     for a upper limit.
+    ///     for an upper limit.
     /// </summary>
     public static CountRange Up(int from)
     {
@@ -16,7 +16,7 @@ public static class Count
 
     /// <summary>
     ///     Count down from (including) the start Number. Will not stop at zero. Use <see cref="CountRange.To" /> or
-    ///     <see cref="CountRange.Take" />for a lower limit.
+    ///     <see cref="CountRange.Take" /> for a lower limit.
     /// </summary>
     public static CountRange Down(int from)
     {
@@ -44,8 +44,8 @@ public readonly struct CountRange : IEnumerable<int>
             throw new ArgumentException(
                 $"Target value {to} is not reachable counting {(step > 0 ? "up" : "down")} from {from}");
 
-        if (take is <= 0)
-            throw new ArgumentException($"Take value {take} must be positive.");
+        if (take is < 0)
+            throw new ArgumentException($"Take value {take} must be non-negative.");
 
         _to = to;
         _take = take;
@@ -55,21 +55,24 @@ public readonly struct CountRange : IEnumerable<int>
     public CountRange To(int to)
     {
         if (_to.HasValue)
-            throw new ArgumentException($"{ToString()} already has a end value: {_to}");
+            throw new ArgumentException($"{ToString()} already has an end value: {_to}");
 
         return new CountRange(_step, _from, to, _take);
     }
 
-    /// <summary>Instead of an upper limit a target number of elements is counted. Will respect <see cref="Step" /></summary>
+    /// <summary>
+    ///     Instead of an upper limit a target number of elements is counted. Will respect <see cref="Step" />.
+    ///     Like LINQ, further calls can only reduce the number of elements.
+    /// </summary>
     public CountRange Take(int take)
     {
-        return new CountRange(_step, _from, _to, take);
+        return new CountRange(_step, _from, _to, Math.Min(_take ?? int.MaxValue, take));
     }
 
-    ///<summary>Step a step size for counting. If target number is not on step, it will stop the number before.</summary>
+    ///<summary>Set a step size for counting. If target number is not on step, it will stop the number before.</summary>
     public CountRange Step(int step)
     {
-        return new CountRange(_step > 0 ? step : -step, _from, _to, _take);
+        return new CountRange(_step > 0 ? Math.Abs(step) : -Math.Abs(step), _from, _to, _take);
     }
 
     public override string ToString()
@@ -116,7 +119,13 @@ public readonly struct CountRange : IEnumerable<int>
             if (_index is 0 && _countRange._take is not 0)
                 return true;
 
-            Current += _countRange._step;
+            var step = _countRange._step;
+
+            // Stop cleanly instead of overflowing the int range when counting toward the boundary.
+            if (_up ? Current > int.MaxValue - step : Current < int.MinValue - step)
+                return false;
+
+            Current += step;
 
             if (_index >= _countRange._take)
                 return false;

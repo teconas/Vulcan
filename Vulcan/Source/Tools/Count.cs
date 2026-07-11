@@ -44,8 +44,8 @@ public readonly struct CountRange : IEnumerable<int>
             throw new ArgumentException(
                 $"Target value {to} is not reachable counting {(step > 0 ? "up" : "down")} from {from}");
 
-        if (take is <= 0)
-            throw new ArgumentException($"Take value {take} must be positive.");
+        if (take is < 0)
+            throw new ArgumentException($"Take value {take} must be non-negative.");
 
         _to = to;
         _take = take;
@@ -66,10 +66,10 @@ public readonly struct CountRange : IEnumerable<int>
         return new CountRange(_step, _from, _to, take);
     }
 
-    ///<summary>Step a step size for counting. If target number is not on step, it will stop the number before.</summary>
+    ///<summary>Set a step size for counting. If target number is not on step, it will stop the number before.</summary>
     public CountRange Step(int step)
     {
-        return new CountRange(_step > 0 ? step : -step, _from, _to, _take);
+        return new CountRange(_step > 0 ? Math.Abs(step) : -Math.Abs(step), _from, _to, _take);
     }
 
     public override string ToString()
@@ -116,7 +116,13 @@ public readonly struct CountRange : IEnumerable<int>
             if (_index is 0 && _countRange._take is not 0)
                 return true;
 
-            Current += _countRange._step;
+            var step = _countRange._step;
+
+            // Stop cleanly instead of overflowing the int range when counting toward the boundary.
+            if (_up ? Current > int.MaxValue - step : Current < int.MinValue - step)
+                return false;
+
+            Current += step;
 
             if (_index >= _countRange._take)
                 return false;

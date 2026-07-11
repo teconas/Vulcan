@@ -179,6 +179,26 @@ public class DoubleExtensionsTests
         => input.Clamp(min, max).ShouldBe(expected, Tolerance);
 
     [Theory]
+    // innerhalb
+    [InlineData(0.5d, 0.5d)]
+    [InlineData(0.25d, 0.25d)]
+    // grenzen
+    [InlineData(0d, 0d)]
+    [InlineData(1d, 1d)]
+    // unter 0
+    [InlineData(-0.1d, 0d)]
+    [InlineData(-100d, 0d)]
+    // über 1
+    [InlineData(1.1d, 1d)]
+    [InlineData(100d, 1d)]
+    public void Clamp01(double input, double expected)
+        => input.Clamp01().ShouldBe(expected, Tolerance);
+
+    [Fact]
+    public void Clamp01_NaN_Throws()
+        => Should.Throw<ArgumentException>(() => double.NaN.Clamp01());
+
+    [Theory]
     // exakt gleich
     [InlineData(5d, 5d, 0d, true)]
     [InlineData(5d, 5d, 0.0001d, true)]
@@ -202,4 +222,12 @@ public class DoubleExtensionsTests
     [InlineData(0d, 0.01d, 0.001d, false)]
     public void Approximately(double input, double operand, double precision, bool expected)
         => input.Approximately(operand, precision).ShouldBe(expected);
+
+    [Fact]
+    public void Approximately_Default_WithinTolerance_IsTrue()
+        => 1.0.Approximately(1.0 + 1e-12).ShouldBeTrue();
+
+    [Fact]
+    public void Approximately_Default_OutsideTolerance_IsFalse()
+        => 1.0.Approximately(1.0 + 1e-3).ShouldBeFalse();
 }

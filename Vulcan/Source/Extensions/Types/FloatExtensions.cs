@@ -38,6 +38,8 @@ public static partial class FloatExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Clamp01(this float number)
     {
+        if (float.IsNaN(number))
+            throw new ArgumentException("Clamping requires a non-NaN number.");
         if (number >= 1)
             return 1;
         if (number <= 0)
@@ -45,8 +47,13 @@ public static partial class FloatExtensions
         return number;
     }
 
+    /// <summary>
+    /// Absolute-tolerance approximate comparison: true when <c>|self - other| &lt;= precision</c>.
+    /// The default <paramref name="precision"/> is a small fixed epsilon (<c>1e-6f</c>).
+    /// Note: a fixed absolute tolerance is not suitable for very large magnitudes — pass an explicit precision there.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Approximately(this float self, float other, float precision = float.Epsilon * 8)
+    public static bool Approximately(this float self, float other, float precision = 1e-6f)
         => Math.Abs(self - other) <= precision;
 }
 

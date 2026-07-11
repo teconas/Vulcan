@@ -32,8 +32,8 @@ collection.AddRange(a, b, c)       // AddRange with params overloads on ICollect
 
 ### String
 ```csharp
-str.IsSet()                        // !string.IsNullOrWhiteSpace
-str.IsNotSet()
+str.IsSet()                        // !string.IsNullOrEmpty — whitespace counts as set
+str.IsNotSet()                     // string.IsNullOrEmpty
 str.EmptyToNull()                  // "" → null, "x" → "x"
 str.EmptyOrWhitespaceToNull()
 "=-".Times(20)                     // repeat a string/char n times

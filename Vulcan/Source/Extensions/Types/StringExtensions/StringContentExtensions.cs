@@ -9,18 +9,18 @@ public static class StringContentExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [ContractAnnotation("value:null => false")]
     public static bool IsSet([NotNullWhen(true)] this string? value)
-        => string.IsNullOrWhiteSpace(value) is false;
+        => string.IsNullOrEmpty(value) is false;
 
-    /// <summary>A string is 'set' if it is not null and not empty. Whitespace does NOT count as empty.</summary>
+    /// <summary>A string is 'not set' if it is null or empty. Whitespace does NOT count as empty.</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [ContractAnnotation("value:null => true")]
     public static bool IsNotSet([NotNullWhen(false)] this string? value)
-        => string.IsNullOrWhiteSpace(value);
+        => string.IsNullOrEmpty(value);
     
     extension(string? value)
     {
         /// <summary>
-        /// Converts empty strings to a null value. Whitespaces is NOT considered empty. See: <see cref="EmptyOrWhitespaceToNull"/>
+        /// Converts empty strings to a null value. Whitespace is NOT considered empty. See: <see cref="EmptyOrWhitespaceToNull"/>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [ContractAnnotation("value:null => null; value:notnull => canbenull")]

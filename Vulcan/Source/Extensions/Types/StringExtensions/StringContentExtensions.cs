@@ -9,13 +9,13 @@ public static class StringContentExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [ContractAnnotation("value:null => false")]
     public static bool IsSet([NotNullWhen(true)] this string? value)
-        => string.IsNullOrWhiteSpace(value) is false;
+        => string.IsNullOrEmpty(value) is false;
 
     /// <summary>A string is 'set' if it is not null and not empty. Whitespace does NOT count as empty.</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [ContractAnnotation("value:null => true")]
     public static bool IsNotSet([NotNullWhen(false)] this string? value)
-        => string.IsNullOrWhiteSpace(value);
+        => string.IsNullOrEmpty(value);
     
     extension(string? value)
     {

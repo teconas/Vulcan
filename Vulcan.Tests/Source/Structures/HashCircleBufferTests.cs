@@ -66,6 +66,10 @@ public class HashCircleBufferTests
     }
 
     [Fact]
+    public void ZeroCapacity_Throws()
+        => Should.Throw<ArgumentOutOfRangeException>(() => new HashCircleBuffer<int>(0));
+
+    [Fact]
     public void Enumeration_MatchesCircleBuffer()
     {
         // HashCircleBuffer should still enumerate old-to-new

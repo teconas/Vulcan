@@ -179,6 +179,26 @@ public class FloatExtensionsTests
         => input.Clamp(min, max).ShouldBe(expected, Tolerance);
 
     [Theory]
+    // innerhalb
+    [InlineData(0.5f, 0.5f)]
+    [InlineData(0.25f, 0.25f)]
+    // grenzen
+    [InlineData(0f, 0f)]
+    [InlineData(1f, 1f)]
+    // unter 0
+    [InlineData(-0.1f, 0f)]
+    [InlineData(-100f, 0f)]
+    // über 1
+    [InlineData(1.1f, 1f)]
+    [InlineData(100f, 1f)]
+    public void Clamp01(float input, float expected)
+        => input.Clamp01().ShouldBe(expected, Tolerance);
+
+    [Fact]
+    public void Clamp01_NaN_Throws()
+        => Should.Throw<ArgumentException>(() => float.NaN.Clamp01());
+
+    [Theory]
     // exakt gleich
     [InlineData(5f, 5f, 0f, true)]
     [InlineData(5f, 5f, 0.0001f, true)]
@@ -202,4 +222,12 @@ public class FloatExtensionsTests
     [InlineData(0f, 0.01f, 0.001f, false)]
     public void Approximately(float input, float operanf, float precision, bool expected)
         => input.Approximately(operanf, precision).ShouldBe(expected);
+
+    [Fact]
+    public void Approximately_Default_WithinTolerance_IsTrue()
+        => 1f.Approximately(1f + 1e-8f).ShouldBeTrue();
+
+    [Fact]
+    public void Approximately_Default_OutsideTolerance_IsFalse()
+        => 1f.Approximately(1f + 1e-2f).ShouldBeFalse();
 }

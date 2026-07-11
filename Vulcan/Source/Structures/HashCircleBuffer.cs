@@ -4,7 +4,8 @@ namespace Vulcan.Structures;
 
 /// <summary>
 /// Does the same as <see cref="CircleBuffer{T}"/>,
-/// but also keeps a HashSet for a faster <see cref="Contains"/>
+/// but also tracks the number of occurrences per item for an O(1) <see cref="Contains"/>.
+/// Duplicates are supported: an item stays contained until its last occurrence is overwritten.
 /// </summary>
 public class HashCircleBuffer<T>(int capacity) : CircleBuffer<T>(capacity)
     where T : notnull

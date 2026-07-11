@@ -6,13 +6,14 @@ namespace Vulcan.Structures;
 /// <summary>Circular Buffer with fixed size. Access Order is old to new.</summary>
 public class CircleBuffer<T>(int capacity) : ICollection<T>
 {
-    readonly T[] _buffer = new T[capacity];
+    readonly T[] _buffer = capacity > 0 ? new T[capacity] : throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity must be positive.");
+    
     int _head = 0;
 
     /// <summary>Capacity of the Buffer</summary>
     public int Capacity => capacity;
 
-    /// <summary>true if the number of elements is equal to the capacity, file otherwise</summary>
+    /// <summary>true if the number of elements is equal to the capacity, false otherwise</summary>
     public bool IsAtCapacity => Count == capacity;
 
     public int Count { get; private set; }
@@ -30,6 +31,7 @@ public class CircleBuffer<T>(int capacity) : ICollection<T>
 
     public virtual void Clear()
     {
+        Array.Clear(_buffer, 0, _buffer.Length);
         _head = 0;
         Count = 0;
     }
@@ -39,10 +41,10 @@ public class CircleBuffer<T>(int capacity) : ICollection<T>
 
     public void CopyTo(T[] array, int arrayIndex)
     {
-        if (array.Length - arrayIndex > Count)
-            throw new ArgumentException("Destination array is not large enough.");
-        if(arrayIndex < 0)
+        if (arrayIndex < 0 || arrayIndex > array.Length)
             throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+        if (array.Length - arrayIndex < Count)
+            throw new ArgumentException("Destination array is not large enough.");
 
         for (var i=0; i<Count;i++)
             array[i + arrayIndex] = this[i];
@@ -53,7 +55,10 @@ public class CircleBuffer<T>(int capacity) : ICollection<T>
     /// n+1 is oldest again.
     /// -1 is newest, -n is oldest again.
     /// </summary>
-    public T this[int index] => _buffer[(_head + index).Mod(Count)];
+    public T this[int index]
+        => Count > 0
+            ? _buffer[(_head + index).Mod(Count)]
+            : throw new ArgumentOutOfRangeException(nameof(index), "Buffer is empty.");
 
     public IEnumerator<T> GetEnumerator() => ToEnumerable().GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

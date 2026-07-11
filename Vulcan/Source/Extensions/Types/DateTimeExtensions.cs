@@ -14,10 +14,10 @@ public static class DateTimeExtensions
         public DateTime SetMonth(int month)
             => dt.AddMonths(month - dt.Month);
 
-        /// <summary>Sets the Month part of the DateTime</summary>
-        /// <remark>If the new day is not valid on the target, the latest earlier valid date is returned instead.</remark>
+        /// <summary>Sets the Day part of the DateTime</summary>
+        /// <remark>If the day exceeds the number of days in the month, the last valid day of the month is returned instead.</remark>
         public DateTime SetDay(int day)
-            => dt.AddDays(day - dt.Day);
+            => dt.AddDays(Math.Min(day, DateTime.DaysInMonth(dt.Year, dt.Month)) - dt.Day);
 
         /// <summary>Sets the Selected part of the DateTime.</summary>
         /// <remark>DaylightSaving-Time changes are ignore. 01:00 to 6:00 is always 06:00</remark>

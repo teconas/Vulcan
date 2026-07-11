@@ -89,6 +89,42 @@ public static class DateTimeExtensionsTests
             result.Year.ShouldBe(2024);
             result.Month.ShouldBe(6);
         }
+
+        [Fact]
+        public void ChangesDay_PreservesTime()
+        {
+            // Arrange
+            var dt = new DateTime(2026, 4, 15, 10, 30, 45, 500);
+
+            // Act
+            var result = dt.SetDay(10);
+
+            // Assert
+            result.ShouldBe(new DateTime(2026, 4, 10, 10, 30, 45, 500));
+            result.TimeOfDay.ShouldBe(dt.TimeOfDay);
+        }
+
+        [Fact]
+        public void OverLargeDay_ClipsToLastDayOfMonth()
+            => new DateTime(2026, 4, 15).SetDay(31).ShouldBe(new DateTime(2026, 4, 30));
+
+        [Fact]
+        public void Day31_InFebruary_ClipsToLastDay()
+            => new DateTime(2026, 2, 10).SetDay(31).ShouldBe(new DateTime(2026, 2, 28));
+
+        [Fact]
+        public void PreservesTimeAndKind()
+        {
+            // Arrange
+            var dt = new DateTime(2026, 4, 15, 10, 30, 45, 500, DateTimeKind.Utc);
+
+            // Act
+            var result = dt.SetDay(31);
+
+            // Assert
+            result.TimeOfDay.ShouldBe(dt.TimeOfDay);
+            result.Kind.ShouldBe(DateTimeKind.Utc);
+        }
     }
 
     public class SetHour

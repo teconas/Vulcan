@@ -158,4 +158,58 @@ public abstract class DisposableLockTests : IDisposable
             _sut.Dispose();
         }
     }
+
+    public class LockNoTimeout : DisposableLockTests
+    {
+        [Fact]
+        public void Lock_NoTimeout_ReleasesOnDispose()
+        {
+            // Arrange
+            var locked = _sut.Lock();
+            locked.ShouldNotBeNull();
+
+            // Act
+            locked.Dispose();
+
+            // Assert
+            using var locked2 = _sut.Lock(SafeTimeout);
+        }
+
+        [Fact]
+        public async Task LockAsync_NoTimeout_ReleasesOnDispose()
+        {
+            // Arrange & Act
+            using (await _sut.LockAsync())
+            {
+            }
+
+            // Assert
+            using var locked2 = await _sut.LockAsync(SafeTimeout);
+        }
+
+        [Fact]
+        public void Handle_DoubleDispose_DoesNotOverRelease()
+        {
+            // Arrange
+            var locked = _sut.Lock();
+
+            // Act — second Dispose must be a no-op thanks to DeferTool idempotency;
+            // a non-idempotent release would throw SemaphoreFullException here.
+            locked.Dispose();
+            Should.NotThrow(() => locked.Dispose());
+
+            // Assert — the lock is released exactly once, so a fresh acquire succeeds.
+            using var locked2 = _sut.Lock(SafeTimeout);
+        }
+
+        [Fact]
+        public void Lock_NoTimeout_MutualExclusion()
+        {
+            // Arrange
+            using var _ = _sut.Lock();
+
+            // Act & Assert
+            Should.Throw<TimeoutException>(() => _sut.Lock(TimeSpan.FromMilliseconds(50)));
+        }
+    }
 }

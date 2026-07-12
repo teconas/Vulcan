@@ -9,9 +9,9 @@ public static class BoolExtensions
             if (value.IsNotSet())
                 return null;
 
-            var trimmedValue = value.Trim().ToLower();
+            var normalized = value.Trim().ToLowerInvariant();
 
-            return trimmedValue.Trim().ToLower() switch
+            return normalized switch
             {
                 "true" => true,
                 "false" => false,
@@ -23,7 +23,7 @@ public static class BoolExtensions
                 "no" or "n" => false,
                 "nein" or "ne" or "nö" => false,
                 "nope" or "nop" => false,
-                _ => bool.TryParse(trimmedValue, out var result) ? result : null,
+                _ => bool.TryParse(normalized, out var result) ? result : null,
             };
         }
 

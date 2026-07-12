@@ -10,6 +10,7 @@ public static class BoolExtensionsTests
         [Theory]
         [InlineData("true"), InlineData("1"), InlineData("YES"), InlineData("y")]
         [InlineData("jA"), InlineData("J"), InlineData("ok"), InlineData("okay")]
+        [InlineData("TRUE"), InlineData("Ja")]
         public void Truthy(string input)
             => bool.TryParse(input).ShouldBe(true);
 
@@ -22,7 +23,7 @@ public static class BoolExtensionsTests
 
         [Theory]
         [InlineData(""), InlineData(null), InlineData("idk"), InlineData("wtf")]
-        [InlineData("15"), InlineData("-1"), InlineData(" ")]
+        [InlineData("15"), InlineData("-1"), InlineData(" "), InlineData("maybe")]
         public void Unknown(string? input)
             => bool.TryParse(input).ShouldBe(null);
     }

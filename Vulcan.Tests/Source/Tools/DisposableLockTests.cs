@@ -149,6 +149,45 @@ public abstract class DisposableLockTests : IDisposable
         }
     }
 
+    [SuppressMessage("Usage", "xUnit1031:Do not use blocking task operations in test method", Justification = "Blocking on the caller's context is the scenario under test")]
+    public class CallerContext : DisposableLockTests
+    {
+        // LockAsync must not resume on the caller's SynchronizationContext: a caller blocking on
+        // .Result/.Wait() from a UI/main thread would otherwise deadlock on a contended lock.
+
+        [Fact]
+        public void LockAsync_Contended_CompletesWhileCallerContextIsBlocked()
+        {
+            // Arrange
+            var firstLock = _sut.Lock(SafeTimeout);
+            using var _ = TestSynchronizationContext.Blocked().Install();
+            var pending = _sut.LockAsync();
+
+            // Act
+            firstLock.Dispose();
+
+            // Assert
+            pending.Wait(SafeTimeout).ShouldBeTrue();
+            pending.Result.Dispose();
+        }
+
+        [Fact]
+        public void LockAsyncWithTimeout_Contended_CompletesWhileCallerContextIsBlocked()
+        {
+            // Arrange
+            var firstLock = _sut.Lock(SafeTimeout);
+            using var _ = TestSynchronizationContext.Blocked().Install();
+            var pending = _sut.LockAsync(SafeTimeout);
+
+            // Act
+            firstLock.Dispose();
+
+            // Assert
+            pending.Wait(SafeTimeout).ShouldBeTrue();
+            pending.Result.Dispose();
+        }
+    }
+
     public class DisposeDisposableLock : DisposableLockTests
     {
         [Fact]
@@ -156,6 +195,60 @@ public abstract class DisposableLockTests : IDisposable
         {
             // Arrange & Act & Assert
             _sut.Dispose();
+        }
+    }
+
+    public class LockNoTimeout : DisposableLockTests
+    {
+        [Fact]
+        public void Lock_NoTimeout_ReleasesOnDispose()
+        {
+            // Arrange
+            var locked = _sut.Lock();
+            locked.ShouldNotBeNull();
+
+            // Act
+            locked.Dispose();
+
+            // Assert
+            using var locked2 = _sut.Lock(SafeTimeout);
+        }
+
+        [Fact]
+        public async Task LockAsync_NoTimeout_ReleasesOnDispose()
+        {
+            // Arrange & Act
+            using (await _sut.LockAsync())
+            {
+            }
+
+            // Assert
+            using var locked2 = await _sut.LockAsync(SafeTimeout);
+        }
+
+        [Fact]
+        public void Handle_DoubleDispose_DoesNotOverRelease()
+        {
+            // Arrange
+            var locked = _sut.Lock();
+
+            // Act — second Dispose must be a no-op thanks to DeferTool idempotency;
+            // a non-idempotent release would throw SemaphoreFullException here.
+            locked.Dispose();
+            Should.NotThrow(() => locked.Dispose());
+
+            // Assert — the lock is released exactly once, so a fresh acquire succeeds.
+            using var locked2 = _sut.Lock(SafeTimeout);
+        }
+
+        [Fact]
+        public void Lock_NoTimeout_MutualExclusion()
+        {
+            // Arrange
+            using var _ = _sut.Lock();
+
+            // Act & Assert
+            Should.Throw<TimeoutException>(() => _sut.Lock(TimeSpan.FromMilliseconds(50)));
         }
     }
 }

@@ -4,20 +4,20 @@ namespace Vulcan.Fluency;
 
 public static class FluencyExtensions
 {
-    extension<TI>(TI self)
+    extension<TIn>(TIn self)
     {
         /// <summary>Fluent Method chaining: Like Select, but for a single element.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TO Pipe<TO>(Func<TI, TO> transformer)
+        public TOut Pipe<TOut>(Func<TIn, TOut> transformer)
         {
             return transformer(self);
         }
 
         /// <summary>
-        ///     Like <see cref="FluencyExtensions.Pipe{TI,TO}(TI,System.Func{TI,TO})" />, but the return value is not propagated.
+        ///     Like <see cref="FluencyExtensions.Pipe{TIn,TOut}(TIn,System.Func{TIn,TOut})" />, but the return value is not propagated.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TI Call(Action<TI> action)
+        public TIn Call(Action<TIn> action)
         {
             action(self);
             return self;

@@ -4,15 +4,15 @@ namespace Vulcan.Extensions;
 
 public static class DictionaryExtensions
 {
-    extension<Key, Value>(IDictionary<Key, Value> dict)
+    extension<TKey, TValue>(IDictionary<TKey, TValue> dict)
     {
         /// <summary>Return value if key is found, or default (e.g. null)</summary>
-        public Value? GetOrDefault(Key key)
+        public TValue? GetOrDefault(TKey key)
             =>  dict.TryGetValue(key, out var value) ? value : default;
 
         /// <summary>Return value if key is found, or create a new value</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Value GetOrInsert(Key key, Func<Key,Value> factory)
+        public TValue GetOrInsert(TKey key, Func<TKey,TValue> factory)
         {
             if (dict.TryGetValue(key, out var found))
                 return found;
@@ -24,7 +24,7 @@ public static class DictionaryExtensions
         
         /// <summary>Return value if key is found, or create a new value</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Value GetOrInsert(Key key, Func<Value> factory)
-            => dict.GetOrInsert<Key, Value>(key, _ =>factory());
+        public TValue GetOrInsert(TKey key, Func<TValue> factory)
+            => dict.GetOrInsert<TKey, TValue>(key, _ =>factory());
     }
 }

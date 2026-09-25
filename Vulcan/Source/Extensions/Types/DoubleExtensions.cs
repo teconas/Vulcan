@@ -12,12 +12,12 @@ public static partial class DoubleExtensions
     public static double? NanToNull(this double value)
         => double.IsNaN(value) ? null : value;
 
-    ///<summary>Because in C# Modulus is wrong: (-6%2 → -6), (-6.Mod(2) → 2)</summary>
+    ///<summary>Because in C# Modulus is wrong: (-6%4 → -2), (-6.Mod(4) → 2)</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Mod(this double self, double mod)
         => mod != 0 ? (self % mod + mod) % mod : throw new DivideByZeroException();
 
-    ///<summary>Because in C# Modulus is wrong: (-6%2 → -6), (-6.Mod(2) → 2)</summary>
+    ///<summary>Because in C# Modulus is wrong: (-6%4 → -2), (-6.Mod(4) → 2)</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Mod(this double self, int mod)
         => mod != 0 ? (self % mod + mod) % mod : throw new DivideByZeroException();
@@ -26,7 +26,7 @@ public static partial class DoubleExtensions
     public static double Clamp(this double number, double min, double max)
     {
         if (max < min || double.IsNaN(number) || double.IsNaN(min) || double.IsNaN(max))
-            throw new ArgumentException("Clamping required max >= min & all numbers to be non-NaN");
+            throw new ArgumentException("Clamping requires max >= min & all numbers to be non-NaN");
         
         if (number < min)
             return min;
@@ -38,6 +38,8 @@ public static partial class DoubleExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double Clamp01(this double number)
     {
+        if (double.IsNaN(number))
+            throw new ArgumentException("Clamping requires a non-NaN number.");
         if (number >= 1)
             return 1;
         if (number <= 0)
@@ -45,8 +47,13 @@ public static partial class DoubleExtensions
         return number;
     }
 
+    /// <summary>
+    /// Absolute-tolerance approximate comparison: true when <c>|self - other| &lt;= precision</c>.
+    /// The default <paramref name="precision"/> is a small fixed epsilon (<c>1e-9</c>).
+    /// Note: a fixed absolute tolerance is not suitable for very large magnitudes — pass an explicit precision there.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Approximately(this double self, double other, double precision = double.Epsilon * 8)
+    public static bool Approximately(this double self, double other, double precision = 1e-9)
         => Math.Abs(self - other) <= precision;
 }
 

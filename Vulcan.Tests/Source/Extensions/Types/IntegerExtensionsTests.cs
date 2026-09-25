@@ -17,6 +17,20 @@ public static class IntegerExtensionsTests
             => input.AsFloat().ShouldBe(expected);
     }
 
+    public class AsDouble
+    {
+        [Theory]
+        [InlineData(0, 0d)]
+        [InlineData(1, 1d)]
+        [InlineData(-1, -1d)]
+        [InlineData(100, 100d)]
+        [InlineData(-100, -100d)]
+        [InlineData(int.MaxValue, 2147483647d)]
+        [InlineData(int.MinValue, -2147483648d)]
+        public void Converts(int input, double expected)
+            => input.AsDouble().ShouldBe(expected);
+    }
+
     public class Modulus
     {
         [Theory]

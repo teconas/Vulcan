@@ -34,14 +34,14 @@ public class DisposableLock : IDisposableLock, IDisposable
     [MustDisposeResource]
     public async Task<IDisposable> LockAsync(CancellationToken token = default)
     {
-        await _semaphore.WaitAsync(token);
+        await _semaphore.WaitAsync(token).ConfigureAwait(false);
         return DeferTool.Defer(() => _semaphore.Release());
     }
 
     [MustDisposeResource]
     public async Task<IDisposable> LockAsync(TimeSpan timeout, CancellationToken token = default)
     {
-        if (await _semaphore.WaitAsync(timeout, token) is false)
+        if (await _semaphore.WaitAsync(timeout, token).ConfigureAwait(false) is false)
             throw new TimeoutException("Could not acquire lock within the specified timeout.");
         return DeferTool.Defer(() => _semaphore.Release());
     }

@@ -17,10 +17,10 @@ value.Pipe(Transform).Pipe(Format).Call(Log)
 ### LINQ gaps
 Things that are just... missing.
 ```csharp
-items.SkipNull()            // removes nulls, infers non-nullable type
+items.WhereNotNull()        // removes nulls, infers non-nullable type
 items.None()                // opposite of .Any()
 items.ForEach(action)       // executes and returns the materialized collection
-items.Distinct(x => x.Id)   // distinct by selector
+items.Distinct(x => x.Id)   // distinct by selector (below .NET 6 only — use DistinctBy otherwise)
 items.SelectMany()          // flatten IEnumerable<IEnumerable<T>>
 items.Join(", ")            // fluent string.Join
 ```
@@ -32,8 +32,8 @@ collection.AddRange(a, b, c)       // AddRange with params overloads on ICollect
 
 ### String
 ```csharp
-str.IsSet()                        // !string.IsNullOrWhiteSpace
-str.IsNotSet()
+str.IsSet()                        // !string.IsNullOrEmpty — whitespace counts as set
+str.IsNotSet()                     // string.IsNullOrEmpty
 str.EmptyToNull()                  // "" → null, "x" → "x"
 str.EmptyOrWhitespaceToNull()
 "=-".Times(20)                     // repeat a string/char n times
@@ -59,3 +59,6 @@ using var _ = await myLock.AcquireAsync();
 
 ## Opinionated?
 Yep. Functional patterns, immutability, left-to-right flow. If that's not your thing, wrong library.
+
+## Why "Vulcan"?
+In Roman mythology, Vulcan is the god of the forge, craftsmanship and tools. Seemed fitting for a library that's basically a toolbox.

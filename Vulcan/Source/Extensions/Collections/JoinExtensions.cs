@@ -18,7 +18,7 @@ public static class JoinExtensions
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string Join(char separator)
-#if NET10_0
+#if NET10_0_OR_GREATER
             => string.Join(separator, source);
 #else
             => string.Join(separator.ToString(), source);

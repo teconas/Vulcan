@@ -27,6 +27,34 @@ public static class EnumerableExtensionsTests
             => _simpleArray.ForEach(_ => { }).ShouldBeOfType<int[]>();
 
         [Fact]
+        public void CollectionSource_ReturnsSameInstance()
+        {
+            // Arrange
+            var source = new HashSet<int> { 1, 2, 3 };
+
+            // Act
+            var result = source.ForEach(_ => { });
+
+            // Assert
+            result.ShouldBeSameAs(source);
+        }
+
+        [Fact]
+        public void LazySource_IsMaterializedOnce()
+        {
+            // Arrange
+            var enumerations = new List<int>();
+            var source = Enumerable.Range(1, 3).Select(x => { enumerations.Add(x); return x; });
+
+            // Act
+            var result = source.ForEach(_ => { });
+
+            // Assert
+            result.ShouldBe([1, 2, 3]);
+            enumerations.ShouldBe([1, 2, 3]);
+        }
+
+        [Fact]
         public void Empty_DoesNotCallAction()
         {
             // Arrange
@@ -55,6 +83,7 @@ public static class EnumerableExtensionsTests
             => new[] { new[] { 1 }, Array.Empty<int>(), new[] { 2 } }.SelectMany().ShouldBe([1, 2]);
     }
 
+#if !NET6_0_OR_GREATER
     public class Distinct
     {
         [Fact]
@@ -81,6 +110,7 @@ public static class EnumerableExtensionsTests
         public void Empty_ReturnsEmpty()
             => Array.Empty<int>().Distinct(x => x).ShouldBeEmpty();
     }
+#endif
 
     public class WhereNotNull
     {

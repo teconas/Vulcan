@@ -17,10 +17,10 @@ value.Pipe(Transform).Pipe(Format).Call(Log)
 ### LINQ gaps
 Things that are just... missing.
 ```csharp
-items.SkipNull()            // removes nulls, infers non-nullable type
+items.WhereNotNull()        // removes nulls, infers non-nullable type
 items.None()                // opposite of .Any()
 items.ForEach(action)       // executes and returns the materialized collection
-items.Distinct(x => x.Id)   // distinct by selector
+items.Distinct(x => x.Id)   // distinct by selector (below .NET 6 only — use DistinctBy otherwise)
 items.SelectMany()          // flatten IEnumerable<IEnumerable<T>>
 items.Join(", ")            // fluent string.Join
 ```

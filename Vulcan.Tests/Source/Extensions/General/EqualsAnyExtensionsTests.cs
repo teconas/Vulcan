@@ -1,6 +1,6 @@
 using Vulcan.Extensions;
 
-namespace Vulcan.Tests.Extensions.Types;
+namespace Vulcan.Tests.Extensions.General;
 
 [TestSubject(typeof(EqualsAnyTypedExtensions))]
 public static class EqualsAnyTypedExtensionsTests

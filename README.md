@@ -59,3 +59,6 @@ using var _ = await myLock.AcquireAsync();
 
 ## Opinionated?
 Yep. Functional patterns, immutability, left-to-right flow. If that's not your thing, wrong library.
+
+## Why "Vulcan"?
+In Roman mythology, Vulcan is the god of the forge, craftsmanship and tools. Seemed fitting for a library that's basically a toolbox.

@@ -2,19 +2,19 @@
 
 namespace Vulcan.Structures;
 
-public class Grouping<Key, Element>(Func<ICollection<Element>> collectionFactory) : IEnumerable<IGrouping<Key, Element>>
-    where Key : notnull
+public class Grouping<TKey, TElement>(Func<ICollection<TElement>> collectionFactory) : IEnumerable<IGrouping<TKey, TElement>>
+    where TKey : notnull
 {
-    readonly Dictionary<Key, ICollection<Element>> _collection = [];
+    readonly Dictionary<TKey, ICollection<TElement>> _collection = [];
 
-    public Grouping() : this(() => new List<Element>()) { }
+    public Grouping() : this(() => new List<TElement>()) { }
 
-    public void Add(Key key, Element element)
+    public void Add(TKey key, TElement element)
     {
         Get(key).Add(element);
     }
 
-    public bool Remove(Key key, Element element)
+    public bool Remove(TKey key, TElement element)
     {
         if (_collection.TryGetValue(key, out var collection))
             return collection.Remove(element);
@@ -22,7 +22,8 @@ public class Grouping<Key, Element>(Func<ICollection<Element>> collectionFactory
         return false;
     }
 
-    public ICollection<Element> Get(Key key)
+    /// <summary>Return the collection for key, or create and store an empty one (get-or-add). Empty groups are skipped on enumeration.</summary>
+    public ICollection<TElement> Get(TKey key)
     {
         if (_collection.TryGetValue(key, out var collection))
             return collection;
@@ -32,13 +33,14 @@ public class Grouping<Key, Element>(Func<ICollection<Element>> collectionFactory
         return newCollection;
     }
 
-    public ICollection<Element> this[Key key] => Get(key);
+    /// <inheritdoc cref="Get"/>
+    public ICollection<TElement> this[TKey key] => Get(key);
 
-    public IEnumerator<IGrouping<Key, Element>> GetEnumerator()
+    public IEnumerator<IGrouping<TKey, TElement>> GetEnumerator()
     {
         return _collection
             .Where(kv => kv.Value.Any())
-            .Select(kv => new GroupingEntry<Key, Element>(kv.Key, kv.Value) as IGrouping<Key, Element>)
+            .Select(kv => new GroupingEntry<TKey, TElement>(kv.Key, kv.Value) as IGrouping<TKey, TElement>)
             .GetEnumerator();
     }
 

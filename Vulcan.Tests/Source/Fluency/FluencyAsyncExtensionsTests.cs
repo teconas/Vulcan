@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Vulcan.Fluency;
 
 namespace Vulcan.Tests.Fluency;
@@ -89,6 +90,49 @@ public static class FluencyAsyncExtensionsTests
                     }));
 
             ran.ShouldBeFalse();
+        }
+    }
+
+    [SuppressMessage("Usage", "xUnit1031:Do not use blocking task operations in test method", Justification = "Keeps the installed context on the test thread")]
+    public class CallerContext
+    {
+        // Unlike library-internal awaits, PipeAsync deliberately keeps the caller's context:
+        // the transformer is user code that may touch main-thread-only APIs (Unity, WPF, WinForms).
+
+        static readonly TimeSpan SafeTimeout = TimeSpan.FromSeconds(5);
+
+        [Fact]
+        public void SyncTransformerRunsOnCallerContext()
+        {
+            // Arrange
+            var context = TestSynchronizationContext.Running();
+            var source = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+            using var _ = context.Install();
+            var piped = source.Task.PipeAsync(_ => SynchronizationContext.Current);
+
+            // Act
+            source.SetResult(0);
+
+            // Assert
+            piped.Wait(SafeTimeout).ShouldBeTrue();
+            piped.Result.ShouldBeSameAs(context);
+        }
+
+        [Fact]
+        public void AsyncTransformerRunsOnCallerContext()
+        {
+            // Arrange
+            var context = TestSynchronizationContext.Running();
+            var source = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+            using var _ = context.Install();
+            var piped = source.Task.PipeAsync(_ => Task.FromResult(SynchronizationContext.Current));
+
+            // Act
+            source.SetResult(0);
+
+            // Assert
+            piped.Wait(SafeTimeout).ShouldBeTrue();
+            piped.Result.ShouldBeSameAs(context);
         }
     }
 

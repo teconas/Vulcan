@@ -149,6 +149,45 @@ public abstract class DisposableLockTests : IDisposable
         }
     }
 
+    [SuppressMessage("Usage", "xUnit1031:Do not use blocking task operations in test method", Justification = "Blocking on the caller's context is the scenario under test")]
+    public class CallerContext : DisposableLockTests
+    {
+        // LockAsync must not resume on the caller's SynchronizationContext: a caller blocking on
+        // .Result/.Wait() from a UI/main thread would otherwise deadlock on a contended lock.
+
+        [Fact]
+        public void LockAsync_Contended_CompletesWhileCallerContextIsBlocked()
+        {
+            // Arrange
+            var firstLock = _sut.Lock(SafeTimeout);
+            using var _ = TestSynchronizationContext.Blocked().Install();
+            var pending = _sut.LockAsync();
+
+            // Act
+            firstLock.Dispose();
+
+            // Assert
+            pending.Wait(SafeTimeout).ShouldBeTrue();
+            pending.Result.Dispose();
+        }
+
+        [Fact]
+        public void LockAsyncWithTimeout_Contended_CompletesWhileCallerContextIsBlocked()
+        {
+            // Arrange
+            var firstLock = _sut.Lock(SafeTimeout);
+            using var _ = TestSynchronizationContext.Blocked().Install();
+            var pending = _sut.LockAsync(SafeTimeout);
+
+            // Act
+            firstLock.Dispose();
+
+            // Assert
+            pending.Wait(SafeTimeout).ShouldBeTrue();
+            pending.Result.Dispose();
+        }
+    }
+
     public class DisposeDisposableLock : DisposableLockTests
     {
         [Fact]

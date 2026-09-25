@@ -179,6 +179,16 @@ public class FloatExtensionsTests
         => input.Clamp(min, max).ShouldBe(expected, Tolerance);
 
     [Theory]
+    // NaN
+    [InlineData(float.NaN, 0f, 1f)]
+    [InlineData(0.5f, float.NaN, 1f)]
+    [InlineData(0.5f, 0f, float.NaN)]
+    // max < min
+    [InlineData(5f, 10f, 0f)]
+    public void Clamp_Invalid_Throws(float input, float min, float max)
+        => Should.Throw<ArgumentException>(() => input.Clamp(min, max));
+
+    [Theory]
     // innerhalb
     [InlineData(0.5f, 0.5f)]
     [InlineData(0.25f, 0.25f)]

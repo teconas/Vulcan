@@ -179,6 +179,16 @@ public class DoubleExtensionsTests
         => input.Clamp(min, max).ShouldBe(expected, Tolerance);
 
     [Theory]
+    // NaN
+    [InlineData(double.NaN, 0d, 1d)]
+    [InlineData(0.5d, double.NaN, 1d)]
+    [InlineData(0.5d, 0d, double.NaN)]
+    // max < min
+    [InlineData(5d, 10d, 0d)]
+    public void Clamp_Invalid_Throws(double input, double min, double max)
+        => Should.Throw<ArgumentException>(() => input.Clamp(min, max));
+
+    [Theory]
     // innerhalb
     [InlineData(0.5d, 0.5d)]
     [InlineData(0.25d, 0.25d)]
